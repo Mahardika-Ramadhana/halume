@@ -1,36 +1,104 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Halume — Parfum E-Commerce
 
-## Getting Started
+Full-stack e-commerce web app untuk penjualan parfum, dibangun dengan Next.js App Router dan Supabase.
 
-First, run the development server:
+## Tech Stack
+
+- **Next.js 16** (App Router, Server Components)
+- **React 19**
+- **TypeScript**
+- **Supabase** — Auth + PostgreSQL + Row Level Security
+- **Tailwind CSS v4** + **shadcn/ui**
+- **Zustand** — cart state management
+- **Sonner** — toast notifications
+
+## Fitur
+
+### Customer
+- Autentikasi (Register & Login) via Supabase Auth
+- Katalog produk dengan pencarian dan filter kategori
+- Halaman detail produk
+- Keranjang belanja (persisted dengan Zustand)
+- Checkout dengan form informasi pengiriman
+- Riwayat pesanan
+
+### Admin
+- Dashboard statistik
+- Manajemen produk: tambah, edit, hapus (CRUD)
+- Manajemen pesanan: lihat dan update status
+- Role-based access control (customer / admin)
+
+## Struktur Halaman
+
+```
+/               → Katalog produk
+/products/[id]  → Detail produk
+/cart           → Keranjang belanja
+/checkout       → Form checkout
+/orders         → Riwayat pesanan
+/login          → Login
+/register       → Register
+/admin          → Dashboard admin
+/admin/products → Manajemen produk
+/admin/orders   → Manajemen pesanan
+```
+
+## Cara Menjalankan
+
+### 1. Clone & Install
+
+```bash
+git clone https://github.com/username/halume.git
+cd halume
+npm install
+```
+
+### 2. Setup Supabase
+
+1. Buat project baru di [supabase.com](https://supabase.com)
+2. Buka **SQL Editor** dan jalankan isi file `supabase/schema.sql`
+3. File ini akan membuat semua tabel beserta sample data produk
+
+### 3. Konfigurasi Environment
+
+```bash
+cp .env.local.example .env.local
+```
+
+Isi `.env.local` dengan kredensial dari **Supabase → Settings → API**:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://xxxxx.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJxxx...
+```
+
+### 4. Jalankan
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Buka [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 5. Setup Akun Admin
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Register akun baru melalui `/register`
+2. Jalankan query berikut di Supabase SQL Editor:
 
-## Learn More
+```sql
+UPDATE profiles
+SET role = 'admin'
+WHERE email = 'email-kamu@example.com';
+```
 
-To learn more about Next.js, take a look at the following resources:
+3. Login kembali → menu "Admin" akan muncul di navbar
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Deploy
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Deploy ke Vercel dengan satu perintah:
 
-## Deploy on Vercel
+```bash
+npx vercel
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Tambahkan environment variables (`NEXT_PUBLIC_SUPABASE_URL` dan `NEXT_PUBLIC_SUPABASE_ANON_KEY`) di dashboard Vercel.
